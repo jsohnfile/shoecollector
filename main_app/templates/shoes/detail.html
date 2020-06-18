@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>
+    {{ shoe.name}} Details 
+    {% if sold[0].sold_price > shoe.purchased_price %}
+        <img src="https://i.imgur.com/6gyppCc.png"><span style="color:green">+{{sold[0].sold_price - shoe.purchased_price}}</span>
+    {% elif sold[0].sold_price < shoe.purchased_price %} 
+        <img src="https://i.imgur.com/QfHTTIu.png"><span style="color:red">-{{shoe.purchased_price - sold[0].sold_price}}</span>
+    {% endif %}
+</h1>
+<div class="card">
+  <div class="card-content">
+    <p>
+        <img class="shoe-image" src={{ shoe.image_url }}>
+        <span class="card-title">{{ shoe.name }}</span>
+    </p>
+    <p>Brand: {{ shoe.brand }}</p>
+    <p>Description: {{ shoe.description }}</p>
+    <p>Purchased Price: ${{ shoe.purchased_price}}
+    {% if shoe.year > 0 %}
+      <p>Year: {{ shoe.year }}</p>
+    {% else %}
+      <p>Year: NEW</p>
+    {% endif %}
+  </div>
+    <div class="card-action">
+    <a href="{% url 'shoes_update' shoe.id %}">Edit</a>
+    <a href="{% url 'shoes_delete' shoe.id %}">Delete</a>
+  </div>
+</div>
+  <div class="col s6">
+
+    <form action="{% url 'add_recently_sold' shoe.id %}" method="post">
+      {% csrf_token %}
+      {{ recently_sold_form.as_p }}
+      <input type="submit" class="btn" value="Add Recently Sold">
+    </form>
+
+    <table class="striped">
+      <thead>
+        <tr><th>Date</th><th>Sold Price</th></tr>
+      </thead>
+      <tbody>
+        {% for recently_sold in shoe.recently_sold_set.all %}
+          <tr>
+            <td>{{recently_sold.date}}</td>
+            <td>${{recently_sold.sold_price}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const dateEl = document.getElementById('id_date');
+  M.Datepicker.init(dateEl, {
+    format: 'yyyy-mm-dd',
+    defaultDate: new Date(),
+    setDefaultDate: true,
+    autoClose: true
+  });
+</script>
+
+{% endblock %}
