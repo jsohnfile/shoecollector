@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load app_filters %}
 
 <h1>Shoe List</h1>
+<p>You Currently Have: {{ shoes|length }} shoes in your collection</p>
 
 {% for shoe in shoes %}
   <div class="card">

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load app_filters %}
 <h1>
     {{ shoe.name}} Details 
 </h1>
@@ -44,8 +45,10 @@
             <td>${{recently_sold.sold_price}}
             {% if recently_sold.sold_price > shoe.purchased_price %}
               <img class="ticker" src="https://i.imgur.com/6gyppCc.png">
+              <span style="color:green"><small> + ${{recently_sold.sold_price|subtract:shoe.purchased_price}}</small></span>
             {% elif recently_sold.sold_price < shoe.purchased_price %}
               <img class="ticker" src="https://i.imgur.com/QfHTTIu.png">
+              <span style="color:red"><small> - ${{shoe.purchased_price|subtract:recently_sold.sold_price}}</small></span>
             {% endif %}
             </td>
           </tr>
@@ -67,6 +70,12 @@
               <div>{{ store.name }}</div>
               <a href="{{ store.url }}{{ urlshoe }}" target="_blank" >Check it out</a>
             </span>
+          </div>
+          <div class="card-action">
+            <form action="{% url 'unassoc_store' shoe.id store.id %}" method="post">
+                {% csrf_token %}
+              <button type="submit" class="btn">Remove</button>
+            </form>
           </div>
         </div>
       {% endfor %}
