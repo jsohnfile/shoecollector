@@ -19,8 +19,7 @@ def about(request):
 @login_required
 def shoes_index(request):
     shoes = Shoe.objects.filter(user=request.user)
-    recently_sold_form = Recently_SoldForm()
-    return render(request, 'shoes/index.html', {'shoes': shoes, 'recently_sold_form': recently_sold_form})
+    return render(request, 'shoes/index.html', {'shoes': shoes})
 
 @login_required
 def shoes_detail(request, shoe_id):
