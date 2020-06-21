@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Shoe, Recently_Sold
+from django.views.generic import ListView, DetailView
+from .models import Shoe, Store, Recently_Sold
 from .forms import Recently_SoldForm
 
 # Create your views here.
@@ -17,13 +18,14 @@ def shoes_index(request):
 
 def shoes_detail(request, shoe_id):
     shoe = Shoe.objects.get(id=shoe_id)
-    sold = Recently_Sold.objects.filter(shoe=shoe_id)
-    print(sold)
+    stores_shoe_isnt_available = Store.objects.exclude(id__in = shoe.stores.all().values_list('id'))
     recently_sold_form = Recently_SoldForm()
+    urlshoe = shoe.name.replace(' ', '-')
     return render(request, 'shoes/detail.html', {
         'shoe': shoe,
         'recently_sold_form': recently_sold_form,
-        'sold': sold
+        'stores': stores_shoe_isnt_available,
+        'urlshoe': urlshoe
         })
 
 
@@ -39,6 +41,11 @@ class ShoeDelete(DeleteView):
     model = Shoe
     success_url = '/shoes/'
     
+def assoc_store(request, shoe_id, store_id):
+    shoe = Shoe.objects.get(id=shoe_id)
+    shoe.stores.add(store_id)
+    return redirect('detail', shoe_id=shoe_id)
+
 def add_recently_sold(request, shoe_id):
     form = Recently_SoldForm(request.POST)
     if form.is_valid():
@@ -46,3 +53,20 @@ def add_recently_sold(request, shoe_id):
         new_recently_sold.shoe_id = shoe_id
         new_recently_sold.save()
     return redirect('detail', shoe_id=shoe_id)
+
+class StoreList(ListView):
+    model = Store
+
+class StoreDetail(DetailView):
+    model = Store
+
+class StoreCreate(CreateView):
+    model = Store
+    fields = '__all__'
+    
+class StoreUpdate(UpdateView):
+    model = Store
+    fields = ['name', 'url']
+    
+class StoreDelete(DeleteView):
+    model = Storesuccess_url = '/stores/'

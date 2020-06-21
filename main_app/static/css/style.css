@@ -16,10 +16,14 @@ body {
   }
 
   nav {
-      background-color: blue;
-      color: white;
+    background-color: blue;
+    color: white;
   }
 
   .shoe-image {
-      width: 50%;
+    width: 50%;
+  }
+
+  .ticker {
+    width: 20px;
   }
