@@ -36,7 +36,7 @@ def shoes_detail(request, shoe_id):
     
 class ShoeCreate(CreateView, LoginRequiredMixin):
     model = Shoe
-    fields = '__all__'
+    fields = ['name', 'brand', 'description', 'year', 'purchased_price', 'image_url']
     
     def form_valid(self, form):
         form.instance.user = self.request.user
